@@ -6,21 +6,14 @@ import matplotlib.pyplot as plt
 # Define circular disc domain in polar coordinates
 # r ∈ [0, 1], θ ∈ [0, 2π)
 nr, ntheta = 40, 80
-r = np.linspace(0.01, 1, nr)  # Start from small value to avoid singularity at origin
+r = np.linspace(0.01, 1, nr)
 theta = np.linspace(0, 2*np.pi, ntheta, endpoint=False)
 dr, dtheta = r[1] - r[0], theta[1] - theta[0]
 R, THETA = np.meshgrid(r, theta, indexing='ij')
 
-# In polar coordinates, the Laplacian is:
-# ∇²u = ∂²u/∂r² + (1/r)∂u/∂r + (1/r²)∂²u/∂θ²
 
-# Define a non-trivial solution as boundary condition
-# Let's use: u_boundary(r=1, θ) = sin(3θ) + cos(2θ) + 1
-# This represents a non-trivial harmonic function
+# u_boundary(r=1, θ) = sin(3θ) + cos(2θ) + 1
 u_boundary = np.sin(3 * THETA[-1, :]) + np.cos(2 * THETA[-1, :]) + 1
-# For the interior, we need to specify the source term f
-# For a non-trivial solution, we can use a source term that is related to our BC
-# Let's use f = r * sin(θ) which gives interesting structure
 f = R * np.sin(THETA)
 
 # Set up boundary conditions
@@ -32,10 +25,6 @@ bc[-1, :] = bc_dirichlet
 
 # Inner boundary (r ≈ 0): Use homogeneous condition or symmetry
 bc[0, :] = 0
-
-# Periodic boundary condition in theta direction
-# Note: BoundaryConditions may handle this automatically if configured
-# For now, we'll ensure continuity at theta=0 and theta=2π by duplication
 
 # Construct the Laplacian operator with polar coordinate terms
 # L = ∂²u/∂r² + (1/r)∂u/∂r + (1/r²)∂²u/∂θ²
